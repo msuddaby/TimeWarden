@@ -1,0 +1,6 @@
+@TimeWarden.API_HostAddress = http://localhost:5223
+
+GET {{TimeWarden.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

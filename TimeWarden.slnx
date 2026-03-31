@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="TimeWarden.API/TimeWarden.API.csproj" />
+  <Project Path="TimeWarden.Domain/TimeWarden.Domain.csproj" />
+  <Project Path="TimeWarden.Infrastructure/TimeWarden.Infrastructure.csproj" />
+</Solution>
