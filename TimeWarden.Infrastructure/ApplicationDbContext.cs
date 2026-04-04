@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TimeWarden.Domain.Entities.Clients;
 using TimeWarden.Domain.Entities.Identity;
 using TimeWarden.Domain.Entities.Invoices;
@@ -16,4 +17,17 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<Project> Projects => Set<Project>();
     public DbSet<Invoice> Invoices => Set<Invoice>();
     public DbSet<ItemOfWork> ItemsOfWork => Set<ItemOfWork>();
+    public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
+
+    protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
+    {
+        configurationBuilder.Properties<DateTime>()
+            .HaveConversion<UtcDateTimeConverter>();
+    }
+
+    private class UtcDateTimeConverter() : ValueConverter<DateTime, DateTime>(
+        v => v.Kind == DateTimeKind.Unspecified
+            ? DateTime.SpecifyKind(v, DateTimeKind.Utc)
+            : v.ToUniversalTime(),
+        v => DateTime.SpecifyKind(v, DateTimeKind.Utc));
 }

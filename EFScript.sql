@@ -259,3 +259,70 @@ BEGIN
 END $EF$;
 COMMIT;
 
+START TRANSACTION;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260401151953_ProjectItemsOfWork') THEN
+    ALTER TABLE "ItemsOfWork" ADD "ProjectId" text;
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260401151953_ProjectItemsOfWork') THEN
+    CREATE INDEX "IX_ItemsOfWork_ProjectId" ON "ItemsOfWork" ("ProjectId");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260401151953_ProjectItemsOfWork') THEN
+    ALTER TABLE "ItemsOfWork" ADD CONSTRAINT "FK_ItemsOfWork_Projects_ProjectId" FOREIGN KEY ("ProjectId") REFERENCES "Projects" ("Id");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260401151953_ProjectItemsOfWork') THEN
+    INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+    VALUES ('20260401151953_ProjectItemsOfWork', '10.0.5');
+    END IF;
+END $EF$;
+COMMIT;
+
+START TRANSACTION;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260401184300_AddRefreshToken') THEN
+    CREATE TABLE "RefreshTokens" (
+        "Id" uuid NOT NULL,
+        "TokenHash" character varying(128) NOT NULL,
+        "CreatedAt" timestamp with time zone NOT NULL,
+        "ExpiresAt" timestamp with time zone NOT NULL,
+        "RevokedAt" timestamp with time zone,
+        "ReplacedByTokenId" uuid,
+        "UserId" text NOT NULL,
+        CONSTRAINT "PK_RefreshTokens" PRIMARY KEY ("Id"),
+        CONSTRAINT "FK_RefreshTokens_AspNetUsers_UserId" FOREIGN KEY ("UserId") REFERENCES "AspNetUsers" ("Id") ON DELETE CASCADE
+    );
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260401184300_AddRefreshToken') THEN
+    CREATE INDEX "IX_RefreshTokens_UserId" ON "RefreshTokens" ("UserId");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260401184300_AddRefreshToken') THEN
+    INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+    VALUES ('20260401184300_AddRefreshToken', '10.0.5');
+    END IF;
+END $EF$;
+COMMIT;
+

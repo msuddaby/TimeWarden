@@ -1,9 +1,12 @@
+using TimeWarden.Domain.Entities.Clients;
+
 namespace TimeWarden.Domain.Entities.Invoices;
 
 public class ItemOfWork
 {
     public string Id { get; set; } = null!;
     public string InvoiceId { get; set; } = null!;
+    public string? ProjectId { get; set; }
     public string Description { get; set; } = null!;
     public decimal HourlyRate { get; set; }
     public decimal HoursOfWork { get; set; }
@@ -11,4 +14,5 @@ public class ItemOfWork
     public DateTime Created { get; set; }
 
     public virtual Invoice Invoice { get; set; } = null!;
+    public virtual Project? Project { get; set; }
 }

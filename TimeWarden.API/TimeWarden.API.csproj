@@ -18,6 +18,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\TimeWarden.Application\TimeWarden.Application.csproj" />
       <ProjectReference Include="..\TimeWarden.Infrastructure\TimeWarden.Infrastructure.csproj" />
     </ItemGroup>
 

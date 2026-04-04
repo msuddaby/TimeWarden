@@ -1,3 +1,5 @@
+using TimeWarden.Domain.Entities.Invoices;
+
 namespace TimeWarden.Domain.Entities.Clients;
 
 public class Project
@@ -7,4 +9,5 @@ public class Project
     public string ProjectName { get; set; } = string.Empty;
 
     public virtual Client Client { get; set; } = null!;
+    public virtual List<ItemOfWork> ItemsOfWork { get; set; }
 }
