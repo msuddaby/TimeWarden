@@ -16,15 +16,18 @@ public interface IClientService
 public class ClientService : IClientService
 {
     private readonly ApplicationDbContext _context;
-
-    public ClientService(ApplicationDbContext context)
+    private readonly ICurrentUserService _currentUser;
+    
+    public ClientService(ApplicationDbContext context, ICurrentUserService currentUser)
     {
         _context = context;
+        _currentUser = currentUser;
     }
 
     public async Task<List<ClientVM>> GetList()
     {
         var res = await _context.Clients
+            .Where(x => x.UserId == _currentUser.UserId)
             .OrderByDescending(x => x.Created)
             .Select(x => new ClientVM()
             {
@@ -46,6 +49,7 @@ public class ClientService : IClientService
         var ent = new Client()
         {
             Id = Guid.NewGuid().ToString(),
+            UserId = _currentUser.UserId,
             Address = model.Address,
             Attention = model.Attention,
             City = model.City,

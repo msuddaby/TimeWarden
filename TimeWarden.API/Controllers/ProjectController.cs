@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using TimeWarden.Application.Models.Client;
@@ -7,6 +8,7 @@ namespace TimeWarden.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class ProjectController : ControllerBase
 {
     private IProjectService _projectService;

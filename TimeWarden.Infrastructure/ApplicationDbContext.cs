@@ -19,6 +19,16 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<ItemOfWork> ItemsOfWork => Set<ItemOfWork>();
     public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
 
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+
+        modelBuilder.Entity<Invoice>()
+            .Property(e => e.Status)
+            .HasConversion<string>()
+            .HasMaxLength(32);
+    }
+
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
     {
         configurationBuilder.Properties<DateTime>()

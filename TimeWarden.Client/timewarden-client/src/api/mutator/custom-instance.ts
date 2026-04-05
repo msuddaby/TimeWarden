@@ -1,13 +1,48 @@
+import { getStoredTokens, setStoredAuth, clearStoredAuth } from '@/lib/auth';
+
+const REFRESH_URL = 'http://localhost:5062/api/User/refresh';
+
+let refreshPromise: Promise<boolean> | null = null;
+
+async function tryRefreshToken(): Promise<boolean> {
+    if (refreshPromise) return refreshPromise;
+
+    refreshPromise = (async () => {
+        const { refreshToken } = getStoredTokens();
+        if (!refreshToken) return false;
+
+        try {
+            const response = await fetch(REFRESH_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ refreshToken }),
+            });
+
+            if (!response.ok) return false;
+
+            const data = await response.json();
+            setStoredAuth(data);
+            return true;
+        } catch {
+            return false;
+        } finally {
+            refreshPromise = null;
+        }
+    })();
+
+    return refreshPromise;
+}
+
 export const customInstance = async <T>(
     url: string,
     init?: RequestInit,
 ): Promise<T> => {
-    const token = localStorage.getItem("access_token");
+    const { accessToken } = getStoredTokens();
 
     const headers = new Headers(init?.headers);
 
-    if (token) {
-        headers.set("Authorization", `Bearer ${token}`);
+    if (accessToken) {
+        headers.set('Authorization', `Bearer ${accessToken}`);
     }
 
     const response = await fetch(url, {
@@ -15,13 +50,47 @@ export const customInstance = async <T>(
         headers,
     });
 
+    // On 401, attempt token refresh and retry (skip if this IS the refresh call)
+    if (response.status === 401 && url !== REFRESH_URL) {
+        const refreshed = await tryRefreshToken();
+        if (refreshed) {
+            const { accessToken: newToken } = getStoredTokens();
+            const retryHeaders = new Headers(init?.headers);
+            if (newToken) {
+                retryHeaders.set('Authorization', `Bearer ${newToken}`);
+            }
+
+            const retryResponse = await fetch(url, {
+                ...init,
+                headers: retryHeaders,
+            });
+
+            if (!retryResponse.ok) {
+                const body = await retryResponse.text().catch(() => '');
+                throw new Error(body || `Request failed with status ${retryResponse.status}`);
+            }
+
+            const contentType = retryResponse.headers.get('content-type');
+            const data = contentType?.includes('application/json')
+                ? await retryResponse.json()
+                : undefined;
+
+            return { data, status: retryResponse.status, headers: retryResponse.headers } as T;
+        }
+
+        // Refresh failed — clear auth and redirect to login
+        clearStoredAuth();
+        window.location.href = '/login';
+        throw new Error('Session expired');
+    }
+
     if (!response.ok) {
-        const body = await response.text().catch(() => "");
+        const body = await response.text().catch(() => '');
         throw new Error(body || `Request failed with status ${response.status}`);
     }
 
-    const contentType = response.headers.get("content-type");
-    const data = contentType?.includes("application/json")
+    const contentType = response.headers.get('content-type');
+    const data = contentType?.includes('application/json')
         ? await response.json()
         : undefined;
 

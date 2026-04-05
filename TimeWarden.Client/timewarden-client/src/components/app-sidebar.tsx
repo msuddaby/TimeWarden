@@ -10,112 +10,49 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar"
 import {
-  RowsIcon,
-  WaveformIcon,
-  CommandIcon,
-  CropIcon,
-  ChartPieIcon,
-  MapTrifoldIcon, AddressBookIcon, InvoiceIcon
+  AddressBookIcon, InvoiceIcon
 } from "@phosphor-icons/react"
 import {Link} from "@tanstack/react-router";
+import {useAuth} from "@/contexts/auth-context";
+import {TimerWidget} from "@/components/timer-widget";
 
-// This is sample data.
-const data = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
+const navMain = [
+  {
+    title: "Clients",
+    url: "#",
+    icon: (
+      <AddressBookIcon />
+    ),
+    isActive: true,
+    items: [
+      {
+        title: "Clients",
+        url: "/clients",
+      },
+    ],
   },
-  teams: [
-    {
-      name: "Acme Inc",
-      logo: (
-        <RowsIcon
-        />
-      ),
-      plan: "Enterprise",
-    },
-    {
-      name: "Acme Corp.",
-      logo: (
-        <WaveformIcon
-        />
-      ),
-      plan: "Startup",
-    },
-    {
-      name: "Evil Corp.",
-      logo: (
-        <CommandIcon
-        />
-      ),
-      plan: "Free",
-    },
-  ],
-  navMain: [
-    {
-      title: "Clients",
-      url: "#",
-      icon: (
-        <AddressBookIcon
-        />
-      ),
-      isActive: true,
-      items: [
-        {
-          title: "Clients",
-          url: "/clients",
-        },
-        {
-          title: "Projects",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Invoices",
-      url: "#",
-      icon: (
-        <InvoiceIcon
-        />
-      ),
-      items: [
-        {
-          title: "Invoices",
-          url: "#",
-        },
-      ],
-    },
-  ],
-  projects: [
-    {
-      name: "Design Engineering",
-      url: "#",
-      icon: (
-        <CropIcon
-        />
-      ),
-    },
-    {
-      name: "Sales & Marketing",
-      url: "#",
-      icon: (
-        <ChartPieIcon
-        />
-      ),
-    },
-    {
-      name: "Travel",
-      url: "#",
-      icon: (
-        <MapTrifoldIcon
-        />
-      ),
-    },
-  ],
-}
+  {
+    title: "Invoices",
+    url: "#",
+    icon: (
+      <InvoiceIcon />
+    ),
+    items: [
+      {
+        title: "Invoices",
+        url: "/invoices",
+      },
+      {
+        title: "New Invoice",
+        url: "/invoices/new",
+      },
+    ],
+  },
+];
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { user } = useAuth();
+
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
@@ -126,10 +63,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </div>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
+        <NavMain items={navMain} />
       </SidebarContent>
+      <TimerWidget />
       <SidebarFooter>
-        <NavUser user={data.user} />
+        {user && <NavUser user={user} />}
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

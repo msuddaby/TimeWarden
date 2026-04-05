@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TimeWarden.Application.Models.Client;
 using TimeWarden.Application.Services;
@@ -6,6 +7,7 @@ namespace TimeWarden.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class ClientController : ControllerBase
 {
     private IClientService _clientService;

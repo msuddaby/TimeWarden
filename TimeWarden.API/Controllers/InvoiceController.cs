@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TimeWarden.Application.Models.Invoice;
 using TimeWarden.Application.Services;
@@ -6,6 +7,7 @@ namespace TimeWarden.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class InvoiceController : ControllerBase
 {
     private readonly IInvoiceService _invoiceService;
@@ -43,6 +45,15 @@ public class InvoiceController : ControllerBase
     public async Task<ActionResult> InvoiceUpdate(InvoiceCreateModel model)
     {
         await _invoiceService.UpdateInvoice(model);
+
+        return Ok();
+    }
+
+    [HttpPatch("{invoiceId}/Status")]
+    public async Task<ActionResult> InvoiceUpdateStatus(string invoiceId, [FromBody] InvoiceStatusUpdateModel model)
+    {
+        model.InvoiceId = invoiceId;
+        await _invoiceService.UpdateInvoiceStatus(model);
 
         return Ok();
     }

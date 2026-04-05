@@ -43,6 +43,7 @@ public class UserController : ControllerBase
             Address = request.Address,
             City = request.City,
             Province = request.Province,
+            Zip = request.Zip,
             Phone = request.Phone,
         };
     
@@ -141,7 +142,7 @@ public class UserController : ControllerBase
     }
     
     private static UserVM ToUserDto(ApplicationUser user) =>
-        new(user.Id, user.UserName!, user.Name, user.Address, user.City, user.Province, user.Phone);
+        new(user.Id, user.UserName!, user.Name, user.Address, user.City, user.Province, user.Zip, user.Phone);
     
     private async Task<RefreshToken?> FollowReplacementChainAsync(Guid tokenId)
     {

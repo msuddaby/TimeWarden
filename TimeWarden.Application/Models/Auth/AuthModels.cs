@@ -10,6 +10,7 @@ public record RegisterRequest(
     [Required, StringLength(256)] string Address,
     [Required, StringLength(256)] string City,
     [Required, StringLength(256)] string Province,
+    [Required, StringLength(256)] string Zip,
     [Required, StringLength(256)] string Phone
 );
 
@@ -22,5 +23,5 @@ public record LogoutRequest([Required] string RefreshToken);
 
 public record AuthResponse(string Token, string RefreshToken, UserVM User);
 
-public record UserVM(string Id, string Username, string Name, string Address, string City, string Province, string Phone);
+public record UserVM(string Id, string Username, string Name, string Address, string City, string Province, string Zip, string Phone);
 

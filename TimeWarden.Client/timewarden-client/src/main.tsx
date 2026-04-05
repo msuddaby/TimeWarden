@@ -7,6 +7,8 @@ import { RouterProvider, createRouter } from '@tanstack/react-router'
 import { routeTree } from './routeTree.gen'
 import {TooltipProvider} from "@/components/ui/tooltip.tsx";
 import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
+import {AuthProvider} from "@/contexts/auth-context.tsx";
+import {TimerProvider} from "@/contexts/timer-context.tsx";
 
 const queryClient = new QueryClient();
 
@@ -27,9 +29,13 @@ if (!rootElement.innerHTML) {
     root.render(
         <StrictMode>
             <QueryClientProvider client={queryClient}>
-                <TooltipProvider>
-                    <RouterProvider router={router}/>
-                </TooltipProvider>
+                <AuthProvider>
+                    <TimerProvider>
+                        <TooltipProvider>
+                            <RouterProvider router={router}/>
+                        </TooltipProvider>
+                    </TimerProvider>
+                </AuthProvider>
             </QueryClientProvider>
         </StrictMode>,
     )

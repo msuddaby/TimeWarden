@@ -11,7 +11,8 @@ public static class DependencyInjection
         services.AddScoped<IInvoiceService, InvoiceService>();
         services.AddScoped<IProjectService, ProjectService>();
         services.AddScoped<ITokenService, TokenService>();
-
+        services.AddScoped<ICurrentUserService, CurrentUserService>();
+        
         return services;
     }
 }

@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using TimeWarden.Application.Models.Auth;
 using TimeWarden.Application.Models.Client;
 using TimeWarden.Application.Models.Invoice;
 using TimeWarden.Domain.Entities.Invoices;
@@ -12,26 +13,43 @@ public interface IInvoiceService
     Task<InvoiceVM> GetInvoice(string invoiceId);
     Task CreateInvoice(InvoiceCreateModel model);
     Task UpdateInvoice(InvoiceCreateModel model);
+    Task UpdateInvoiceStatus(InvoiceStatusUpdateModel model);
 }
 
 public class InvoiceService : IInvoiceService
 {
     private readonly ApplicationDbContext _context;
+    private readonly ICurrentUserService _currentUser;
 
-    public InvoiceService(ApplicationDbContext context)
+    public InvoiceService(ApplicationDbContext context, ICurrentUserService currentUser)
     {
         _context = context;
+        _currentUser = currentUser;
     }
 
     public async Task<List<InvoiceVM>> GetInvoicesByClient(string clientId)
     {
-        var result = await _context.Invoices.Where(x => x.ClientId == clientId)
+        var result = await _context.Invoices.Where(x => x.ClientId == clientId && x.UserId == _currentUser.UserId)
+            .Include(x => x.Client)
             .OrderByDescending(x => x.Created)
             .Select(x => new InvoiceVM()
             {
                 ClientId = x.ClientId,
                 Id = x.Id,
-                InvoiceDate = x.InvoiceDate
+                InvoiceDate = x.InvoiceDate,
+                Status = x.Status,
+                ItemCount = x.ItemsOfWork.Count,
+                TotalAmount = x.ItemsOfWork.Sum(w => w.HourlyRate * w.HoursOfWork),
+                Client = new ClientVM()
+                {
+                    Id = x.ClientId,
+                    Name = x.Client.Name,
+                    Address = x.Client.Address,
+                    Attention = x.Client.Attention,
+                    City = x.Client.City,
+                    Province = x.Client.Province,
+                    Zip = x.Client.Zip,
+                }
             }).ToListAsync();
 
         return result;
@@ -39,7 +57,11 @@ public class InvoiceService : IInvoiceService
 
     public async Task<InvoiceVM> GetInvoice(string invoiceId)
     {
-        var invoice = await _context.Invoices.Where(x => x.Id == invoiceId).FirstOrDefaultAsync();
+        var invoice = await _context.Invoices
+            .Where(x => x.Id == invoiceId)
+            .Include(x => x.Client)
+            .Include(x => x.User)
+            .FirstOrDefaultAsync();
 
         if (invoice is null)
         {
@@ -58,6 +80,29 @@ public class InvoiceService : IInvoiceService
             ClientId = invoice.ClientId,
             Id = invoice.Id,
             InvoiceDate = invoice.InvoiceDate,
+            Status = invoice.Status,
+            Client = new ClientVM()
+            {
+                Id = invoice.Client.Id,
+                Name = invoice.Client.Name,
+                Address = invoice.Client.Address,
+                Attention = invoice.Client.Attention,
+                City = invoice.Client.City,
+                Province = invoice.Client.Province,
+                Zip = invoice.Client.Zip,
+            },
+            User = new UserVM(
+                invoice.User.Id,
+                invoice.User.UserName!,
+                invoice.User.Name,
+                invoice.User.Address,
+                invoice.User.City,
+                invoice.User.Province,
+                invoice.User.Zip,
+                invoice.User.Phone
+            ),
+            ItemCount = invoiceLineItems.Count,
+            TotalAmount = invoiceLineItems.Sum(x => x.HourlyRate * x.HoursOfWork),
             ItemsOfWork = invoiceLineItems.Select(x => new ItemOfWorkVM()
             {
                 Id = x.Id,
@@ -89,6 +134,7 @@ public class InvoiceService : IInvoiceService
             Id = Guid.NewGuid().ToString(),
             Created = DateTime.UtcNow,
             ClientId = model.ClientId,
+            UserId = _currentUser.UserId,
             InvoiceDate = DateTime.SpecifyKind(model.InvoiceDate, DateTimeKind.Utc),
         };
 
@@ -172,5 +218,29 @@ public class InvoiceService : IInvoiceService
         await _context.SaveChangesAsync();
 
         await transaction.CommitAsync();
+    }
+
+    public async Task UpdateInvoiceStatus(InvoiceStatusUpdateModel model)
+    {
+        var invoice = await _context.Invoices
+            .Where(x => x.Id == model.InvoiceId && x.UserId == _currentUser.UserId)
+            .FirstOrDefaultAsync();
+
+        if (invoice is null)
+            throw new ApplicationException("Invoice not found");
+
+        var allowed = (invoice.Status, model.Status) switch
+        {
+            (InvoiceStatus.Draft, InvoiceStatus.Sent) => true,
+            (InvoiceStatus.Sent, InvoiceStatus.Paid) => true,
+            _ => false,
+        };
+
+        if (!allowed)
+            throw new ApplicationException(
+                $"Cannot transition from {invoice.Status} to {model.Status}");
+
+        invoice.Status = model.Status;
+        await _context.SaveChangesAsync();
     }
 }

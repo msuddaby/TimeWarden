@@ -326,3 +326,274 @@ BEGIN
 END $EF$;
 COMMIT;
 
+START TRANSACTION;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260405164506_AddUserNavigation') THEN
+    ALTER TABLE "Projects" ADD "Created" timestamp with time zone NOT NULL DEFAULT TIMESTAMPTZ '-infinity';
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260405164506_AddUserNavigation') THEN
+    ALTER TABLE "Projects" ADD "Trash" boolean NOT NULL DEFAULT FALSE;
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260405164506_AddUserNavigation') THEN
+    ALTER TABLE "ItemsOfWork" ADD "Trash" boolean NOT NULL DEFAULT FALSE;
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260405164506_AddUserNavigation') THEN
+    ALTER TABLE "Invoices" ADD "UserId" text NOT NULL DEFAULT '';
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260405164506_AddUserNavigation') THEN
+    ALTER TABLE "Clients" ADD "UserId" text NOT NULL DEFAULT '';
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260405164506_AddUserNavigation') THEN
+    CREATE INDEX "IX_Invoices_UserId" ON "Invoices" ("UserId");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260405164506_AddUserNavigation') THEN
+    CREATE INDEX "IX_Clients_UserId" ON "Clients" ("UserId");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260405164506_AddUserNavigation') THEN
+    ALTER TABLE "Clients" ADD CONSTRAINT "FK_Clients_AspNetUsers_UserId" FOREIGN KEY ("UserId") REFERENCES "AspNetUsers" ("Id") ON DELETE CASCADE;
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260405164506_AddUserNavigation') THEN
+    ALTER TABLE "Invoices" ADD CONSTRAINT "FK_Invoices_AspNetUsers_UserId" FOREIGN KEY ("UserId") REFERENCES "AspNetUsers" ("Id") ON DELETE CASCADE;
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260405164506_AddUserNavigation') THEN
+    INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+    VALUES ('20260405164506_AddUserNavigation', '10.0.5');
+    END IF;
+END $EF$;
+COMMIT;
+
+START TRANSACTION;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260405181639_StringLengthAndUserZipCode') THEN
+    ALTER TABLE "Projects" ALTER COLUMN "ProjectName" TYPE character varying(256);
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260405181639_StringLengthAndUserZipCode') THEN
+    ALTER TABLE "Projects" ALTER COLUMN "ClientId" TYPE character varying(256);
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260405181639_StringLengthAndUserZipCode') THEN
+    ALTER TABLE "Projects" ALTER COLUMN "Id" TYPE character varying(256);
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260405181639_StringLengthAndUserZipCode') THEN
+    ALTER TABLE "ItemsOfWork" ALTER COLUMN "ProjectId" TYPE character varying(256);
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260405181639_StringLengthAndUserZipCode') THEN
+    ALTER TABLE "ItemsOfWork" ALTER COLUMN "InvoiceId" TYPE character varying(256);
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260405181639_StringLengthAndUserZipCode') THEN
+    ALTER TABLE "ItemsOfWork" ALTER COLUMN "Description" TYPE character varying(2048);
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260405181639_StringLengthAndUserZipCode') THEN
+    ALTER TABLE "ItemsOfWork" ALTER COLUMN "Id" TYPE character varying(256);
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260405181639_StringLengthAndUserZipCode') THEN
+    ALTER TABLE "Invoices" ALTER COLUMN "UserId" TYPE character varying(256);
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260405181639_StringLengthAndUserZipCode') THEN
+    ALTER TABLE "Invoices" ALTER COLUMN "ClientId" TYPE character varying(256);
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260405181639_StringLengthAndUserZipCode') THEN
+    ALTER TABLE "Invoices" ALTER COLUMN "Id" TYPE character varying(256);
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260405181639_StringLengthAndUserZipCode') THEN
+    ALTER TABLE "Clients" ALTER COLUMN "Zip" TYPE character varying(256);
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260405181639_StringLengthAndUserZipCode') THEN
+    ALTER TABLE "Clients" ALTER COLUMN "UserId" TYPE character varying(256);
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260405181639_StringLengthAndUserZipCode') THEN
+    ALTER TABLE "Clients" ALTER COLUMN "Province" TYPE character varying(256);
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260405181639_StringLengthAndUserZipCode') THEN
+    ALTER TABLE "Clients" ALTER COLUMN "Name" TYPE character varying(256);
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260405181639_StringLengthAndUserZipCode') THEN
+    ALTER TABLE "Clients" ALTER COLUMN "City" TYPE character varying(256);
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260405181639_StringLengthAndUserZipCode') THEN
+    ALTER TABLE "Clients" ALTER COLUMN "Attention" TYPE character varying(256);
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260405181639_StringLengthAndUserZipCode') THEN
+    ALTER TABLE "Clients" ALTER COLUMN "Address" TYPE character varying(256);
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260405181639_StringLengthAndUserZipCode') THEN
+    ALTER TABLE "Clients" ALTER COLUMN "Id" TYPE character varying(256);
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260405181639_StringLengthAndUserZipCode') THEN
+    ALTER TABLE "AspNetUsers" ALTER COLUMN "Province" TYPE character varying(256);
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260405181639_StringLengthAndUserZipCode') THEN
+    ALTER TABLE "AspNetUsers" ALTER COLUMN "Phone" TYPE character varying(256);
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260405181639_StringLengthAndUserZipCode') THEN
+    ALTER TABLE "AspNetUsers" ALTER COLUMN "Name" TYPE character varying(256);
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260405181639_StringLengthAndUserZipCode') THEN
+    ALTER TABLE "AspNetUsers" ALTER COLUMN "City" TYPE character varying(256);
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260405181639_StringLengthAndUserZipCode') THEN
+    ALTER TABLE "AspNetUsers" ALTER COLUMN "Address" TYPE character varying(256);
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260405181639_StringLengthAndUserZipCode') THEN
+    ALTER TABLE "AspNetUsers" ADD "Zip" character varying(256) NOT NULL DEFAULT '';
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260405181639_StringLengthAndUserZipCode') THEN
+    INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+    VALUES ('20260405181639_StringLengthAndUserZipCode', '10.0.5');
+    END IF;
+END $EF$;
+COMMIT;
+
+START TRANSACTION;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260405185047_AddInvoiceStatus') THEN
+    ALTER TABLE "Invoices" ADD "Status" character varying(32) NOT NULL DEFAULT 'Draft';
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260405185047_AddInvoiceStatus') THEN
+    INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+    VALUES ('20260405185047_AddInvoiceStatus', '10.0.5');
+    END IF;
+END $EF$;
+COMMIT;
+
