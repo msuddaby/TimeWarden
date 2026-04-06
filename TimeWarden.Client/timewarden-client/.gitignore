@@ -44,4 +44,3 @@ nx-cloud.env
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 .tanstack
-src/api/generated/

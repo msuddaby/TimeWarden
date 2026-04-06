@@ -3,7 +3,6 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci
 COPY . .
-RUN npm run api:generate
 RUN npm run build
 FROM node:22-alpine
 COPY --from=build /app/dist /app/dist
