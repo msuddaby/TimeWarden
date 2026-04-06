@@ -65,6 +65,17 @@ builder.Services.AddTimeWardenServices();
 
 var app = builder.Build();
 
+// Apply idempotent migration script if bundled
+var migrationScript = Path.Combine(AppContext.BaseDirectory, "migrations.sql");
+if (File.Exists(migrationScript))
+{
+    using var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    var sql = await File.ReadAllTextAsync(migrationScript);
+    await db.Database.ExecuteSqlRawAsync(sql);
+    app.Logger.LogInformation("Applied migration script.");
+}
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
