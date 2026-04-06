@@ -47,7 +47,11 @@ const TimerContext = createContext<TimerContextType | null>(null);
 
 export function TimerProvider({ children }: { children: ReactNode }) {
     const [state, setState] = useState<TimerState>(loadState);
-    const [elapsedSeconds, setElapsedSeconds] = useState(0);
+    const [elapsedSeconds, setElapsedSeconds] = useState(() =>
+        state.startedAt
+            ? Math.floor((Date.now() - new Date(state.startedAt).getTime()) / 1000)
+            : 0
+    );
 
     // Persist state to localStorage on every change
     useEffect(() => {
@@ -56,15 +60,10 @@ export function TimerProvider({ children }: { children: ReactNode }) {
 
     // Tick the elapsed counter while running
     useEffect(() => {
-        if (!state.startedAt) {
-            setElapsedSeconds(0);
-            return;
-        }
+        if (!state.startedAt) return;
 
         const calcElapsed = () =>
             Math.floor((Date.now() - new Date(state.startedAt!).getTime()) / 1000);
-
-        setElapsedSeconds(calcElapsed());
 
         const interval = setInterval(() => {
             setElapsedSeconds(calcElapsed());
@@ -101,10 +100,12 @@ export function TimerProvider({ children }: { children: ReactNode }) {
                 },
             };
         });
+        setElapsedSeconds(0);
     }, []);
 
     const discard = useCallback(() => {
         setState({ ...defaultState });
+        setElapsedSeconds(0);
     }, []);
 
     const value = useMemo<TimerContextType>(() => ({

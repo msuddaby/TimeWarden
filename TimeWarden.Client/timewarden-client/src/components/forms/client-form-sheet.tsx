@@ -1,14 +1,14 @@
 import { useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
-import { usePostApiClient, getGetApiClientListQueryKey } from '@/api/generated/client/client';
+import { usePostApiClient, getGetApiClientListQueryKey } from '@/api/generated/client/client.ts';
 import {
     SheetContent,
     SheetHeader,
     SheetTitle,
     SheetDescription,
-} from '@/components/ui/sheet';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
+} from '@/components/ui/sheet.tsx';
+import { Input } from '@/components/ui/input.tsx';
+import { Button } from '@/components/ui/button.tsx';
 
 export function ClientFormSheet({ onClose }: { onClose: () => void }) {
     const queryClient = useQueryClient();
@@ -64,21 +64,21 @@ export function ClientFormSheet({ onClose }: { onClose: () => void }) {
                 </div>
                 <div className="space-y-2">
                     <label htmlFor="address" className="text-sm font-medium">Address</label>
-                    <Input id="address" value={form.address} onChange={update('address')} required />
+                    <Input id="address" value={form.address} onChange={update('address')} />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
                         <label htmlFor="city" className="text-sm font-medium">City</label>
-                        <Input id="city" value={form.city} onChange={update('city')} required />
+                        <Input id="city" value={form.city} onChange={update('city')} />
                     </div>
                     <div className="space-y-2">
                         <label htmlFor="province" className="text-sm font-medium">Province</label>
-                        <Input id="province" value={form.province} onChange={update('province')} required />
+                        <Input id="province" value={form.province} onChange={update('province')} />
                     </div>
                 </div>
                 <div className="w-1/2 space-y-2">
                     <label htmlFor="zip" className="text-sm font-medium">Zip / Postal Code</label>
-                    <Input id="zip" value={form.zip} onChange={update('zip')} required />
+                    <Input id="zip" value={form.zip} onChange={update('zip')} />
                 </div>
                 {error && <p className="text-destructive text-sm">{error}</p>}
                 <Button type="submit" className="w-full" disabled={createMutation.isPending}>

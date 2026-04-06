@@ -237,6 +237,18 @@ function InvoiceDetailPage() {
                 </Card>
             ))}
 
+            {/* Extra Notes */}
+            {invoice.extraNotes && (
+                <Card>
+                    <CardHeader className="pb-2">
+                        <CardTitle className="text-muted-foreground text-sm font-medium">Notes</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <p className="whitespace-pre-wrap">{invoice.extraNotes}</p>
+                    </CardContent>
+                </Card>
+            )}
+
             {/* Grand Total */}
             {sections.length > 1 && (
                 <Card className="border-primary/20 bg-primary/5">

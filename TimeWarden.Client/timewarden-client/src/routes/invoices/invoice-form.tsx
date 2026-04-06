@@ -38,6 +38,7 @@ export interface LineItem {
 export interface InvoiceFormState {
     clientId: string;
     invoiceDate: string;
+    extraNotes: string | null;
     items: LineItem[];
 }
 
@@ -95,6 +96,7 @@ export function InvoiceForm({ mode, invoiceId, initialState, preselectedClientId
         return {
             clientId: preselectedClientId ?? '',
             invoiceDate: new Date().toISOString().slice(0, 10),
+            extraNotes: null,
             items: prefilledItems ?? [createEmptyItem()],
         };
     });
@@ -178,6 +180,7 @@ export function InvoiceForm({ mode, invoiceId, initialState, preselectedClientId
             ...(mode === 'edit' ? { id: invoiceId } : {}),
             clientId: form.clientId,
             invoiceDate: form.invoiceDate,
+            extraNotes: form.extraNotes,
             itemsOfWork: form.items.map(
                 (item): ItemOfWorkCreateModel => ({
                     ...(item.id ? { id: item.id } : {}),
@@ -361,6 +364,24 @@ export function InvoiceForm({ mode, invoiceId, initialState, preselectedClientId
                             Add Line Item
                         </Button>
                     </CardFooter>
+                </Card>
+
+                {/* Extra Notes */}
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Extra Notes</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <textarea
+                            className="w-full min-w-0 rounded-md border border-input bg-input/20 px-2 py-1.5 text-sm transition-colors outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/30 dark:bg-input/30"
+                            rows={3}
+                            placeholder="Optional notes to include on the invoice..."
+                            value={form.extraNotes ?? ''}
+                            onChange={(e) =>
+                                setForm((prev) => ({ ...prev, extraNotes: e.target.value || null }))
+                            }
+                        />
+                    </CardContent>
                 </Card>
 
                 {error && <p className="text-destructive text-sm">{error}</p>}

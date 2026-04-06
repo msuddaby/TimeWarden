@@ -5,10 +5,11 @@ import { usePostApiUserLogin } from '@/api/generated/user/user';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import * as React from "react";
 
 export const Route = createFileRoute('/login')({
     component: LoginPage,
-    validateSearch: (search: Record<string, unknown>) => ({
+    validateSearch: (search: Record<string, unknown>): { redirect?: string } => ({
         redirect: (search.redirect as string) || undefined,
     }),
 });
@@ -23,7 +24,7 @@ function LoginPage() {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
 
-    async function handleSubmit(e: React.FormEvent) {
+    async function handleSubmit(e: React.SubmitEvent) {
         e.preventDefault();
         setError('');
 

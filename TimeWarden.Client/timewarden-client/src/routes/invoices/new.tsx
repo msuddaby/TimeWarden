@@ -4,7 +4,12 @@ import type { LineItem } from './invoice-form';
 
 export const Route = createFileRoute('/invoices/new')({
     component: NewInvoicePage,
-    validateSearch: (search: Record<string, unknown>) => ({
+    validateSearch: (search: Record<string, unknown>): {
+        clientId?: string;
+        timerHours?: string;
+        timerDescription?: string;
+        timerDate?: string;
+    } => ({
         clientId: typeof search.clientId === 'string' ? search.clientId : undefined,
         timerHours: typeof search.timerHours === 'string' ? search.timerHours : undefined,
         timerDescription: typeof search.timerDescription === 'string' ? search.timerDescription : undefined,

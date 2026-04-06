@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect, useMemo } from 'react';
+import { createContext, useContext, useState, useMemo } from 'react';
 import type { ReactNode } from 'react';
 import type { AuthResponse, UserVM } from '@/api/generated/models';
 import { getStoredUser, setStoredAuth, clearStoredAuth, isAuthenticated as checkAuth } from '@/lib/auth';
@@ -6,7 +6,6 @@ import { getStoredUser, setStoredAuth, clearStoredAuth, isAuthenticated as check
 interface AuthContextType {
     user: UserVM | null;
     isAuthenticated: boolean;
-    isLoading: boolean;
     setAuthFromResponse: (response: AuthResponse) => void;
     clearAuth: () => void;
 }
@@ -14,20 +13,13 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-    const [user, setUser] = useState<UserVM | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
-
-    useEffect(() => {
-        if (checkAuth()) {
-            setUser(getStoredUser());
-        }
-        setIsLoading(false);
-    }, []);
+    const [user, setUser] = useState<UserVM | null>(() =>
+        checkAuth() ? getStoredUser() : null
+    );
 
     const value = useMemo<AuthContextType>(() => ({
         user,
         isAuthenticated: user !== null,
-        isLoading,
         setAuthFromResponse(response: AuthResponse) {
             setStoredAuth(response);
             setUser(response.user ?? null);
@@ -36,7 +28,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             clearStoredAuth();
             setUser(null);
         },
-    }), [user, isLoading]);
+    }), [user]);
 
     return (
         <AuthContext.Provider value={value}>

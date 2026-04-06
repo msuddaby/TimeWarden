@@ -1,14 +1,14 @@
 import { useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
-import { usePostApiProject, getGetApiProjectListByClientClientIdQueryKey } from '@/api/generated/project/project';
+import { usePostApiProject, getGetApiProjectListByClientClientIdQueryKey } from '@/api/generated/project/project.ts';
 import {
     SheetContent,
     SheetHeader,
     SheetTitle,
     SheetDescription,
-} from '@/components/ui/sheet';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
+} from '@/components/ui/sheet.tsx';
+import { Input } from '@/components/ui/input.tsx';
+import { Button } from '@/components/ui/button.tsx';
 
 export function ProjectFormSheet({ clientId, onClose }: { clientId: string; onClose: () => void }) {
     const queryClient = useQueryClient();

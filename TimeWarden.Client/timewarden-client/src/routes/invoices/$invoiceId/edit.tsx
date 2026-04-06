@@ -6,7 +6,11 @@ import type { InvoiceFormState, LineItem } from '../invoice-form';
 
 export const Route = createFileRoute('/invoices/$invoiceId/edit')({
     component: EditInvoicePage,
-    validateSearch: (search: Record<string, unknown>) => ({
+    validateSearch: (search: Record<string, unknown>): {
+        timerHours?: string;
+        timerDescription?: string;
+        timerDate?: string;
+    } => ({
         timerHours: typeof search.timerHours === 'string' ? search.timerHours : undefined,
         timerDescription: typeof search.timerDescription === 'string' ? search.timerDescription : undefined,
         timerDate: typeof search.timerDate === 'string' ? search.timerDate : undefined,
@@ -35,6 +39,7 @@ function EditInvoicePage() {
         return {
             clientId: invoice.clientId ?? '',
             invoiceDate: invoice.invoiceDate?.slice(0, 10) ?? '',
+            extraNotes: invoice.extraNotes ?? null,
             items: (invoice.itemsOfWork ?? []).map((item) => ({
                 _key: crypto.randomUUID(),
                 id: item.id,

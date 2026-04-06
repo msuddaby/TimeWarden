@@ -31,7 +31,7 @@ import {
     PlusIcon,
 } from "@phosphor-icons/react";
 import { Sheet, SheetTrigger } from "@/components/ui/sheet.tsx";
-import { ProjectFormSheet } from "./project-form-sheet.tsx";
+import { ProjectFormSheet } from "@/components/forms/project-form-sheet.tsx";
 import { useState } from "react";
 
 export const Route = createFileRoute('/clients/$clientId/')({

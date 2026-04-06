@@ -40,6 +40,7 @@ public class InvoiceService : IInvoiceService
                 Status = x.Status,
                 ItemCount = x.ItemsOfWork.Count,
                 TotalAmount = x.ItemsOfWork.Sum(w => w.HourlyRate * w.HoursOfWork),
+                ExtraNotes = x.ExtraNotes,
                 Client = new ClientVM()
                 {
                     Id = x.ClientId,
@@ -81,6 +82,7 @@ public class InvoiceService : IInvoiceService
             Id = invoice.Id,
             InvoiceDate = invoice.InvoiceDate,
             Status = invoice.Status,
+            ExtraNotes = invoice.ExtraNotes,
             Client = new ClientVM()
             {
                 Id = invoice.Client.Id,
@@ -134,6 +136,7 @@ public class InvoiceService : IInvoiceService
             Id = Guid.NewGuid().ToString(),
             Created = DateTime.UtcNow,
             ClientId = model.ClientId,
+            ExtraNotes = model.ExtraNotes,
             UserId = _currentUser.UserId,
             InvoiceDate = DateTime.SpecifyKind(model.InvoiceDate, DateTimeKind.Utc),
         };
@@ -181,6 +184,7 @@ public class InvoiceService : IInvoiceService
         }
 
         invoice.InvoiceDate = DateTime.SpecifyKind(model.InvoiceDate, DateTimeKind.Utc);
+        invoice.ExtraNotes = model.ExtraNotes;
 
         List<ItemOfWork> newItemsOfWork = new();
 

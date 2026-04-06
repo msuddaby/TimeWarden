@@ -193,6 +193,21 @@ const styles = StyleSheet.create({
         fontFamily: 'Helvetica-Bold',
         color: colors.white,
     },
+    notesSection: {
+        marginTop: 16,
+    },
+    notesLabel: {
+        fontSize: 9,
+        color: colors.muted,
+        textTransform: 'uppercase',
+        letterSpacing: 0.5,
+        marginBottom: 4,
+    },
+    notesText: {
+        fontSize: 10,
+        color: '#4b5563',
+        lineHeight: 1.5,
+    },
 });
 
 function formatCurrency(amount: number): string {
@@ -358,7 +373,7 @@ export function InvoicePdf({ invoice }: { invoice: InvoiceVM }) {
                         {section.items.map((item, i) => (
                             <View
                                 key={i}
-                                style={[styles.tableRow, i % 2 === 1 && styles.tableRowAlt]}
+                                style={i % 2 === 1 ? [styles.tableRow, styles.tableRowAlt] : styles.tableRow}
                             >
                                 <Text style={[styles.tableCellBold, styles.colDescription]}>
                                     {item.description}
@@ -392,6 +407,14 @@ export function InvoicePdf({ invoice }: { invoice: InvoiceVM }) {
                         </View>
                     </View>
                 ))}
+
+                {/* Extra Notes */}
+                {invoice.extraNotes && (
+                    <View style={styles.notesSection}>
+                        <Text style={styles.notesLabel}>Notes</Text>
+                        <Text style={styles.notesText}>{invoice.extraNotes}</Text>
+                    </View>
+                )}
 
                 {/* Grand Total */}
                 <View style={styles.grandTotal}>

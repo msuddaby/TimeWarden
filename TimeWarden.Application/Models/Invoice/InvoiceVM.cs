@@ -12,6 +12,7 @@ public class InvoiceVM
     public InvoiceStatus Status { get; set; }
     public int ItemCount { get; set; }
     public decimal TotalAmount { get; set; }
+    public string? ExtraNotes { get; set; }
     public List<ItemOfWorkVM> ItemsOfWork { get; set; } = new();
     public ClientVM Client { get; set; } = null!;
     public UserVM? User { get; set; }

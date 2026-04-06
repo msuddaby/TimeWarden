@@ -12,6 +12,8 @@ public class Invoice
     public string ClientId { get; set; } = null!;
     [StringLength(256)]
     public string UserId { get; set; } = null!;
+    [StringLength(8192)]
+    public string? ExtraNotes { get; set; }
     public DateTime Created { get; set; } = DateTime.UtcNow;
     public DateTime InvoiceDate { get; set; } = DateTime.UtcNow;
     public InvoiceStatus Status { get; set; } = InvoiceStatus.Draft;
