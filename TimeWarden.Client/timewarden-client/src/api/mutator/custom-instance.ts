@@ -1,6 +1,7 @@
 import { getStoredTokens, setStoredAuth, clearStoredAuth } from '@/lib/auth';
 
-const REFRESH_URL = 'http://localhost:5062/api/User/refresh';
+const API_URL = import.meta.env.VITE_API_URL || '';
+const REFRESH_URL = `${API_URL}/api/User/refresh`;
 
 let refreshPromise: Promise<boolean> | null = null;
 
@@ -45,13 +46,15 @@ export const customInstance = async <T>(
         headers.set('Authorization', `Bearer ${accessToken}`);
     }
 
-    const response = await fetch(url, {
+    const fullUrl = `${API_URL}${url}`;
+
+    const response = await fetch(fullUrl, {
         ...init,
         headers,
     });
 
     // On 401, attempt token refresh and retry (skip if this IS the refresh call)
-    if (response.status === 401 && url !== REFRESH_URL) {
+    if (response.status === 401 && fullUrl !== REFRESH_URL) {
         const refreshed = await tryRefreshToken();
         if (refreshed) {
             const { accessToken: newToken } = getStoredTokens();
@@ -60,7 +63,7 @@ export const customInstance = async <T>(
                 retryHeaders.set('Authorization', `Bearer ${newToken}`);
             }
 
-            const retryResponse = await fetch(url, {
+            const retryResponse = await fetch(fullUrl, {
                 ...init,
                 headers: retryHeaders,
             });

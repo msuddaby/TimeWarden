@@ -11,7 +11,7 @@ export default defineConfig({
             schemas: "src/api/generated/models",
             client: "react-query",
             httpClient: "fetch",
-            baseUrl: "http://localhost:5062",
+            baseUrl: "",
             override: {
                 mutator: {
                     path: "src/api/mutator/custom-instance.ts",
