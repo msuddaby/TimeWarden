@@ -264,6 +264,10 @@ function buildSections(invoice: InvoiceVM): ProjectSection[] {
         section.total += rate * hours;
     }
 
+    for (const section of map.values()) {
+        section.items.sort((a, b) => new Date(b.dateOfWork).getTime() - new Date(a.dateOfWork).getTime());
+    }
+
     return Array.from(map.values());
 }
 
@@ -319,9 +323,6 @@ export function InvoicePdf({ invoice }: { invoice: InvoiceVM }) {
                             {client && (
                                 <View style={styles.addressCol}>
                                     <Text style={styles.sectionLabel}>Bill To</Text>
-                                    {client.attention && (
-                                        <Text style={styles.clientAttention}>Attn: {client.attention}</Text>
-                                    )}
                                     {client.name && <Text style={styles.clientName}>{client.name}</Text>}
                                     {client.address && (
                                         <Text style={styles.clientAddress}>{client.address}</Text>
@@ -331,6 +332,9 @@ export function InvoicePdf({ invoice }: { invoice: InvoiceVM }) {
                                             {[client.city, client.province].filter(Boolean).join(', ')}{' '}
                                             {client.zip}
                                         </Text>
+                                    )}
+                                    {client.attention && (
+                                        <Text style={styles.clientAttention}>Attn: {client.attention}</Text>
                                     )}
                                 </View>
                             )}
