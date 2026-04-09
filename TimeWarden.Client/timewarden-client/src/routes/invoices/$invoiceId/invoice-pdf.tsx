@@ -265,7 +265,7 @@ function buildSections(invoice: InvoiceVM): ProjectSection[] {
     }
 
     for (const section of map.values()) {
-        section.items.sort((a, b) => new Date(b.dateOfWork).getTime() - new Date(a.dateOfWork).getTime());
+        section.items.sort((a, b) => new Date(a.dateOfWork).getTime() - new Date(b.dateOfWork).getTime());
     }
 
     return Array.from(map.values());
