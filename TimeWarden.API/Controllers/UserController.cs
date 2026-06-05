@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
@@ -138,6 +139,58 @@ public class UserController : ControllerBase
 
         storedToken.RevokedAt = DateTime.UtcNow;
         await _context.SaveChangesAsync();
+        return Ok();
+    }
+
+    [HttpGet("profile")]
+    [Authorize]
+    public async Task<ActionResult<UserVM>> GetProfile()
+    {
+        var username = User.Identity?.Name;
+        if (username is null)
+        {
+            return Unauthorized();
+        }
+        
+        var user = await _userManager.FindByNameAsync(username);
+        if (user is null)
+        {
+            return NotFound();
+        }
+        
+        var res = ToUserDto(user);
+        return res;
+    }
+
+    [HttpPost("profile")]
+    [Authorize]
+    public async Task<ActionResult> SaveProfile(UserVM newUserProfile)
+    {
+        var username = User.Identity?.Name;
+        if (username is null)
+        {
+            return Unauthorized();
+        }
+
+        var user = await _userManager.FindByNameAsync(username);
+        if (user is null)
+        {
+            return NotFound();
+        }
+
+        user.Address = newUserProfile.Address;
+        user.City = newUserProfile.City;
+        user.Name = newUserProfile.Name;
+        user.Phone = newUserProfile.Phone;
+        user.Province = newUserProfile.Province;
+        user.Zip = newUserProfile.Zip;
+        try
+        {
+            await _userManager.UpdateAsync(user);
+        } catch  (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
         return Ok();
     }
     

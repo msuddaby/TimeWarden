@@ -1,5 +1,6 @@
 import { Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer';
 import type { InvoiceVM } from '@/api/generated/models';
+import {formatCurrency, formatDate, toNumber} from "@/lib/utils.ts";
 
 const colors = {
     primary: '#1a1a2e',
@@ -209,26 +210,6 @@ const styles = StyleSheet.create({
         lineHeight: 1.5,
     },
 });
-
-function formatCurrency(amount: number): string {
-    return new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: 'USD',
-    }).format(amount);
-}
-
-function formatDate(dateStr: string): string {
-    return new Date(dateStr).toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-        timeZone: 'UTC',
-    });
-}
-
-function toNumber(value: number | string | undefined): number {
-    return Number(value) || 0;
-}
 
 interface ProjectSection {
     projectName: string;

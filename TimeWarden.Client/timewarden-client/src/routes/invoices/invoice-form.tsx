@@ -22,6 +22,7 @@ import {
     Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from '@/components/ui/select';
 import { ArrowLeftIcon, PlusIcon, TrashIcon } from '@phosphor-icons/react';
+import {formatCurrency, toNumber} from "@/lib/utils.ts";
 
 // --- Types ---
 
@@ -63,20 +64,8 @@ function createEmptyItem(): LineItem {
     };
 }
 
-function toNumber(value: string): number {
-    const n = parseFloat(value);
-    return isNaN(n) ? 0 : n;
-}
-
 function itemAmount(item: LineItem): number {
     return toNumber(item.hourlyRate) * toNumber(item.hoursOfWork);
-}
-
-function formatCurrency(amount: number): string {
-    return new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: 'USD',
-    }).format(amount);
 }
 
 const NONE_PROJECT = '__none__';

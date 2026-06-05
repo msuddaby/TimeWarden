@@ -33,18 +33,11 @@ import {
 import { Sheet, SheetTrigger } from "@/components/ui/sheet.tsx";
 import { ProjectFormSheet } from "@/components/forms/project-form-sheet.tsx";
 import { useState } from "react";
+import {formatDate} from "@/lib/utils.ts";
 
 export const Route = createFileRoute('/clients/$clientId/')({
     component: ClientDetailPage,
 })
-
-function formatDate(dateStr: string): string {
-    return new Date(dateStr).toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-    });
-}
 
 function ClientDetailPage() {
     const { clientId } = Route.useParams();

@@ -29,30 +29,13 @@ import { FilePdfIcon, PencilSimpleIcon } from "@phosphor-icons/react";
 import { pdf } from '@react-pdf/renderer';
 import { InvoicePdf } from './invoice-pdf';
 import { useState } from 'react';
+import {formatCurrency, formatDate, toNumber} from "@/lib/utils.ts";
 
 export const Route = createFileRoute('/invoices/$invoiceId/')({
     component: InvoiceDetailPage,
 })
 
-function formatCurrency(amount: number): string {
-    return new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: 'USD',
-    }).format(amount);
-}
 
-function formatDate(dateStr: string): string {
-    return new Date(dateStr).toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-        timeZone: 'UTC',
-    });
-}
-
-function toNumber(value: number | string | undefined): number {
-    return Number(value) || 0;
-}
 
 function InvoiceDetailPage() {
     const { invoiceId } = Route.useParams();

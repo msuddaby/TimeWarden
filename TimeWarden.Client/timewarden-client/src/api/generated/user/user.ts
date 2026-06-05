@@ -5,13 +5,22 @@
  * OpenAPI spec version: 1.0.0
  */
 import {
-  useMutation
+  useMutation,
+  useQuery
 } from '@tanstack/react-query';
 import type {
+  DataTag,
+  DefinedInitialDataOptions,
+  DefinedUseQueryResult,
   MutationFunction,
   QueryClient,
+  QueryFunction,
+  QueryKey,
+  UndefinedInitialDataOptions,
   UseMutationOptions,
-  UseMutationResult
+  UseMutationResult,
+  UseQueryOptions,
+  UseQueryResult
 } from '@tanstack/react-query';
 
 import type {
@@ -19,7 +28,8 @@ import type {
   LoginRequest,
   LogoutRequest,
   RefreshRequest,
-  RegisterRequest
+  RegisterRequest,
+  UserVM
 } from '../models';
 
 import { customInstance } from '../../mutator/custom-instance';
@@ -362,4 +372,194 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
         TContext
       > => {
       return useMutation(getPostApiUserLogoutMutationOptions(options), queryClient);
+    }
+    export type getApiUserProfileResponse200TextPlain = {
+  data: UserVM
+  status: 200
+}
+
+export type getApiUserProfileResponse200ApplicationJson = {
+  data: UserVM
+  status: 200
+}
+
+export type getApiUserProfileResponse200TextJson = {
+  data: UserVM
+  status: 200
+}
+
+export type getApiUserProfileResponseSuccess = (getApiUserProfileResponse200TextPlain | getApiUserProfileResponse200ApplicationJson | getApiUserProfileResponse200TextJson) & {
+  headers: Headers;
+};
+;
+
+export type getApiUserProfileResponse = (getApiUserProfileResponseSuccess)
+
+export const getGetApiUserProfileUrl = () => {
+
+
+
+
+  return `/api/User/profile`
+}
+
+export const getApiUserProfile = async ( options?: RequestInit): Promise<getApiUserProfileResponse> => {
+
+  return customInstance<getApiUserProfileResponse>(getGetApiUserProfileUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetApiUserProfileQueryKey = () => {
+    return [
+    `/api/User/profile`
+    ] as const;
+    }
+
+
+export const getGetApiUserProfileQueryOptions = <TData = Awaited<ReturnType<typeof getApiUserProfile>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiUserProfile>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetApiUserProfileQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiUserProfile>>> = ({ signal }) => getApiUserProfile({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getApiUserProfile>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiUserProfileQueryResult = NonNullable<Awaited<ReturnType<typeof getApiUserProfile>>>
+export type GetApiUserProfileQueryError = unknown
+
+
+export function useGetApiUserProfile<TData = Awaited<ReturnType<typeof getApiUserProfile>>, TError = unknown>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiUserProfile>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiUserProfile>>,
+          TError,
+          Awaited<ReturnType<typeof getApiUserProfile>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiUserProfile<TData = Awaited<ReturnType<typeof getApiUserProfile>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiUserProfile>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiUserProfile>>,
+          TError,
+          Awaited<ReturnType<typeof getApiUserProfile>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiUserProfile<TData = Awaited<ReturnType<typeof getApiUserProfile>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiUserProfile>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+
+export function useGetApiUserProfile<TData = Awaited<ReturnType<typeof getApiUserProfile>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiUserProfile>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetApiUserProfileQueryOptions(options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+export type postApiUserProfileResponse200 = {
+  data: void
+  status: 200
+}
+
+export type postApiUserProfileResponseSuccess = (postApiUserProfileResponse200) & {
+  headers: Headers;
+};
+;
+
+export type postApiUserProfileResponse = (postApiUserProfileResponseSuccess)
+
+export const getPostApiUserProfileUrl = () => {
+
+
+
+
+  return `/api/User/profile`
+}
+
+export const postApiUserProfile = async (userVM: UserVM, options?: RequestInit): Promise<postApiUserProfileResponse> => {
+
+  return customInstance<postApiUserProfileResponse>(getPostApiUserProfileUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      userVM,)
+  }
+);}
+
+
+
+
+export const getPostApiUserProfileMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiUserProfile>>, TError,{data: UserVM}, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof postApiUserProfile>>, TError,{data: UserVM}, TContext> => {
+
+const mutationKey = ['postApiUserProfile'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiUserProfile>>, {data: UserVM}> = (props) => {
+          const {data} = props ?? {};
+
+          return  postApiUserProfile(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PostApiUserProfileMutationResult = NonNullable<Awaited<ReturnType<typeof postApiUserProfile>>>
+    export type PostApiUserProfileMutationBody = UserVM
+    export type PostApiUserProfileMutationError = unknown
+
+    export const usePostApiUserProfile = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiUserProfile>>, TError,{data: UserVM}, TContext>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof postApiUserProfile>>,
+        TError,
+        {data: UserVM},
+        TContext
+      > => {
+      return useMutation(getPostApiUserProfileMutationOptions(options), queryClient);
     }

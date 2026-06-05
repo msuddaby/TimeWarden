@@ -11,19 +11,11 @@ import {
 } from '@/components/ui/table';
 import { PlusIcon, InvoiceIcon, ArrowRightIcon } from '@phosphor-icons/react';
 import { InvoiceStatusBadge } from '@/components/invoice-status-badge';
+import {formatDate} from "@/lib/utils.ts";
 
 export const Route = createFileRoute('/invoices/')({
     component: InvoicesRoute,
 });
-
-function formatDate(dateStr: string): string {
-    return new Date(dateStr).toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-        timeZone: 'UTC',
-    });
-}
 
 function InvoicesRoute() {
     const { data: clientsResponse, isPending: clientsLoading } = useGetApiClientList();

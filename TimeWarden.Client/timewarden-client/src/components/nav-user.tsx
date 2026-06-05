@@ -16,12 +16,12 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
-import { CaretUpDownIcon, SignOutIcon } from "@phosphor-icons/react"
+import {CaretUpDownIcon, IdentificationCardIcon, SignOutIcon} from "@phosphor-icons/react"
 import type { UserVM } from "@/api/generated/models"
 import { useAuth } from "@/contexts/auth-context"
 import { getStoredTokens } from "@/lib/auth"
 import { postApiUserLogout } from "@/api/generated/user/user"
-import { useNavigate } from "@tanstack/react-router"
+import {Link, useNavigate } from "@tanstack/react-router"
 
 function getInitials(name: string): string {
   return name
@@ -85,6 +85,12 @@ export function NavUser({ user }: { user: UserVM }) {
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
+            <DropdownMenuItem asChild={true}>
+              <Link to={"/profile"}>
+                <IdentificationCardIcon />
+                Profile
+              </Link>
+            </DropdownMenuItem>
             <DropdownMenuItem onClick={handleLogout}>
               <SignOutIcon />
               Log out
