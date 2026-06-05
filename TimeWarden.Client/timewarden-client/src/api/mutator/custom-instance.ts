@@ -1,6 +1,6 @@
 import { getStoredTokens, setStoredAuth, clearStoredAuth } from '@/lib/auth';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5062';
+const API_URL = import.meta.env.VITE_API_URL || '';
 const REFRESH_URL = `${API_URL}/api/User/refresh`;
 
 let refreshPromise: Promise<boolean> | null = null;
