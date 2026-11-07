@@ -38,8 +38,8 @@ public class InvoiceService : IInvoiceService
                 Id = x.Id,
                 InvoiceDate = x.InvoiceDate,
                 Status = x.Status,
-                ItemCount = x.ItemsOfWork.Count,
-                TotalAmount = x.ItemsOfWork.Sum(w => w.HourlyRate * w.HoursOfWork),
+                ItemCount = x.ItemsOfWork.Count(w => !w.Trash),
+                TotalAmount = x.ItemsOfWork.Where(w => !w.Trash).Sum(w => w.HourlyRate * w.HoursOfWork),
                 ExtraNotes = x.ExtraNotes,
                 Client = new ClientVM()
                 {
@@ -73,7 +73,7 @@ public class InvoiceService : IInvoiceService
 
         var invoiceLineItems = await _context
             .ItemsOfWork
-            .Where(x => x.InvoiceId == invoiceId)
+            .Where(x => x.InvoiceId == invoiceId && !x.Trash)
             .ToListAsync();
 
         var result = new InvoiceVM()
@@ -191,7 +191,7 @@ public class InvoiceService : IInvoiceService
         foreach (var workItem in model.ItemsOfWork)
         {
             var existing = invoice.ItemsOfWork
-                .FirstOrDefault(x => x.Id == workItem.Id);
+                .FirstOrDefault(x => x.Id == workItem.Id && !x.Trash);
 
             if (existing is not null)
             {
@@ -199,6 +199,7 @@ public class InvoiceService : IInvoiceService
                 existing.Description = workItem.Description;
                 existing.HourlyRate = workItem.HourlyRate;
                 existing.HoursOfWork = workItem.HoursOfWork;
+                existing.ProjectId = workItem.ProjectId;
             }
             else
             {
@@ -216,7 +217,16 @@ public class InvoiceService : IInvoiceService
             }
         }
 
-        
+        var submittedIds = model.ItemsOfWork
+            .Where(x => x.Id is not null)
+            .Select(x => x.Id)
+            .ToHashSet();
+
+        foreach (var removed in invoice.ItemsOfWork.Where(x => !x.Trash && !submittedIds.Contains(x.Id)))
+        {
+            removed.Trash = true;
+        }
+
         await _context.ItemsOfWork.AddRangeAsync(newItemsOfWork);
 
         await _context.SaveChangesAsync();
