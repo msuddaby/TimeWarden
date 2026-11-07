@@ -1,6 +1,9 @@
-import { Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer';
+import { Document, Font, Page, Text, View, StyleSheet } from '@react-pdf/renderer';
 import type { InvoiceVM } from '@/api/generated/models';
 import {formatCurrency, formatDate, toNumber} from "@/lib/utils.ts";
+
+// Wrap whole words instead of hyphenating them across lines.
+Font.registerHyphenationCallback((word) => [word]);
 
 const colors = {
     primary: '#1a1a2e',
@@ -21,7 +24,7 @@ const styles = StyleSheet.create({
     headerRow: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginBottom: 24,
+        marginBottom: 12,
     },
     title: {
         fontSize: 28,
@@ -54,7 +57,7 @@ const styles = StyleSheet.create({
     divider: {
         borderBottomWidth: 1,
         borderBottomColor: colors.border,
-        marginVertical: 16,
+        marginVertical: 12,
     },
     // Address row (From / Bill To)
     addressRow: {
@@ -118,7 +121,7 @@ const styles = StyleSheet.create({
     },
     // Project sections
     projectSection: {
-        marginTop: 16,
+        marginTop: 12,
     },
     projectName: {
         fontSize: 13,
@@ -179,7 +182,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        marginTop: 20,
+        marginTop: 16,
         padding: 14,
         backgroundColor: colors.primary,
         borderRadius: 6,
@@ -395,14 +398,14 @@ export function InvoicePdf({ invoice }: { invoice: InvoiceVM }) {
 
                 {/* Extra Notes */}
                 {invoice.extraNotes && (
-                    <View style={styles.notesSection}>
+                    <View style={styles.notesSection} wrap={false}>
                         <Text style={styles.notesLabel}>Notes</Text>
                         <Text style={styles.notesText}>{invoice.extraNotes}</Text>
                     </View>
                 )}
 
                 {/* Grand Total */}
-                <View style={styles.grandTotal}>
+                <View style={styles.grandTotal} wrap={false}>
                     <Text style={styles.grandTotalLabel}>Grand Total</Text>
                     <Text style={styles.grandTotalValue}>{formatCurrency(grandTotal)}</Text>
                 </View>
